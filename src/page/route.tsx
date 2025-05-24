@@ -29,6 +29,56 @@ const s3 = new S3Client({
   },
 });
 const bucket = Deno.env.get("AWS_BUCKET") ?? "";
+//this needs to be before the /:audio_id route, so that redirects land here first if the page is page/login
+page.get("/login", (c) => {
+  return c.html(
+    <Layout>
+      <body class="h-full flex items-center justify-center">
+        <div class="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
+          <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Enter Access Code
+          </h1>
+          <form action="/auth/login" method="post" class="space-y-4">
+            <div class="hidden">
+              <label for="h">h</label>
+              <input
+                type="text"
+                name="h"
+                id="h"
+                autocomplete="off"
+                tabindex={-1}
+              />
+            </div>
+
+            <div>
+              <label
+                for="promo"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Access Code (case sensitive)
+              </label>
+              <input
+                type="text"
+                id="promo"
+                name="promo"
+                required
+                placeholder="Your promo code"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      </body>
+    </Layout>
+  );
+});
 
 page.get("/:audio_id", async (c) => {
   const { audio_id } = c.req.param();
@@ -166,56 +216,6 @@ page.get("/:audio_id", async (c) => {
             <button
               type="submit"
               class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
-            >
-              Submit
-            </button>
-          </form>
-        </div>
-      </body>
-    </Layout>
-  );
-});
-
-page.get("/login", (c) => {
-  return c.html(
-    <Layout>
-      <body class="h-full flex items-center justify-center">
-        <div class="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl">
-          <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
-            Enter Access Code
-          </h1>
-          <form action="/auth/login" method="post" class="space-y-4">
-            <div class="hidden">
-              <label for="h">h</label>
-              <input
-                type="text"
-                name="h"
-                id="h"
-                autocomplete="off"
-                tabindex={-1}
-              />
-            </div>
-
-            <div>
-              <label
-                for="promo"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Access Code (case sensitive)
-              </label>
-              <input
-                type="text"
-                id="promo"
-                name="promo"
-                required
-                placeholder="Your promo code"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition"
             >
               Submit
             </button>
